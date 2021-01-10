@@ -1,0 +1,28 @@
+{
+  "name": "g-express",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "author": "方珂琛 <984512789@qq.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node index.ts",
+    "dev": "nodemon -e ts --exec ts-node index.ts",
+    "serve": "node ./dist/index.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.9",
+    "@types/express-ws": "^3.0.0",
+    "@types/mysql": "^2.15.17",
+    "@types/node": "^14.14.20",
+    "nodemon": "^2.0.7",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}

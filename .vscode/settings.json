@@ -1,0 +1,9 @@
+{
+  "editor.tabSize": 2,
+  "editor.fontSize": 16,
+  "editor.insertSpaces": true,
+  "editor.mouseWheelZoom": false,
+  "editor.formatOnSave": true,
+  "javascript.format.enable": true,
+  "typescript.format.enable": true
+}
