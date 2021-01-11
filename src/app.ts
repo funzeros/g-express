@@ -3,7 +3,7 @@ import express from "express";
 import expressWs from "express-ws";
 import scheduleWs from "./util/autoSchedule";
 import moduleRouter from "./module/index";
-import {initDB} from "./util/db";
+import {initDB} from "./db";
 import {not_found_handler, error_handler_middleware} from "./util/middle";
 
 // 初始化连接数据库
