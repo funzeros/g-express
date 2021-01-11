@@ -3,8 +3,8 @@ import express from "express";
 import expressWs from "express-ws";
 import scheduleWs from "./util/autoSchedule";
 import moduleRouter from "./module/index";
-import { initDB } from "./util/db";
-import { not_found_handler, error_handler_middleware } from "./util/middle";
+import {initDB} from "./util/db";
+import {not_found_handler, error_handler_middleware} from "./util/middle";
 
 // 初始化连接数据库
 initDB();
@@ -13,8 +13,8 @@ initDB();
 const appBase = express();
 // websocket
 const wsInstance = expressWs(appBase);
-const { app } = wsInstance;
-app.ws("/autoSchedule", (ws: any, req: any) => {
+const {app} = wsInstance;
+app.ws("/autoSchedule", ws => {
   // 将 ws 传递给函数
   scheduleWs(ws);
 });

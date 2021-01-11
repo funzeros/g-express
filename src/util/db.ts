@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize";
+import {Sequelize} from "sequelize";
 import "dotenv/config";
 const database = process.env.DB || "test";
 const name = process.env.NAME || "root";
@@ -22,19 +22,20 @@ const db = new Sequelize(database, name, password, {
     freezeTableName: true, //自定义表面，不设置会自动将表名转为复数形式
     timestamps: false, //自动生成更新时间、创建时间字段：updatedAt,createdAt
   },
+  timezone: "+08:00", //东八时区
   //
 });
-export const connectDB = () => {
+export const connectDB = (): void => {
   db.authenticate()
     .then(() => {
       console.log("数据库已连接！");
     })
-    .catch((err) => {
+    .catch(err => {
       console.log(err);
       console.log("连接失败");
     });
 };
 
-export const initDB = () => {
+export const initDB = (): void => {
   connectDB();
 };

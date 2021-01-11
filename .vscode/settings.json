@@ -3,7 +3,14 @@
   "editor.fontSize": 16,
   "editor.insertSpaces": true,
   "editor.mouseWheelZoom": false,
-  "editor.formatOnSave": true,
-  "javascript.format.enable": true,
-  "typescript.format.enable": true
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "files.eol": "\n",
+  "eslint.validate": [
+    "typescript",
+    "javascript"
+  ],
+  "javascript.format.enable": false,
+  "typescript.format.enable": false
 }
