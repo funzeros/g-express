@@ -9,7 +9,8 @@
     "dev": "nodemon -e ts --exec ts-node index.ts",
     "build": "tsc",
     "serve": "node ./dist/index.js",
-    "pm": "pm2 start ./dist/index.js"
+    "pm": "pm2 start ./dist/index.js",
+    "fix":"git config --global core.autocrlf input"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
