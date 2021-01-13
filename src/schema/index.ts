@@ -5,7 +5,7 @@ const files = fs.readdirSync(__dirname + "/models");
 const exportsObj: any = {};
 files
   .filter(f => {
-    return f.endsWith(".ts");
+    return f.endsWith(".ts") || f.endsWith(".js");
   }, files)
   .forEach(f => {
     const name = f.substring(0, f.length - 3);

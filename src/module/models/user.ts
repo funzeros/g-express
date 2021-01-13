@@ -3,6 +3,7 @@ import {DTO} from "../types";
 import schema from "../../schema/index";
 import {validType} from "../../util/util";
 const user = schema.user.default;
+
 /**
  * 注册
  */
