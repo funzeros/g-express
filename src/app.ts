@@ -18,7 +18,7 @@ const appBase = express();
 // websocket
 const wsInstance = expressWs(appBase);
 const {app} = wsInstance;
-app.ws("/autoSchedule", ws => {
+app.ws("/ws", ws => {
   // 将 ws 传递给函数
   scheduleWs(ws);
 });
@@ -27,7 +27,7 @@ app.ws("/autoSchedule", ws => {
 app.use(bodyParser.json());
 // 创建 application/x-www-form-urlencoded 编码解析
 app.use(bodyParser.urlencoded({extended: false}));
-app.use("/ws", express.static(path.join(__dirname, "static")));
+app.use("/html", express.static(path.join(__dirname, "static")));
 app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // 加载模块

@@ -10,7 +10,8 @@
     "build": "tsc",
     "serve": "node ./dist/index.js",
     "pm": "pm2 start ./dist/index.js",
-    "fix":"git config --global core.autocrlf input"
+    "pms": "pm2 stop ./dist/index.js",
+    "fix": "git config --global core.autocrlf input"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
