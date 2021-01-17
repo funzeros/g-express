@@ -10,6 +10,7 @@
     "build": "tsc",
     "serve": "node ./dist/index.js",
     "pm": "pm2 start ./dist/index.js --name g-express",
+    "pmr": "pm2 restart g-express",
     "pms": "pm2 stop g-express",
     "pmd": "pm2 delete g-express",
     "fix": "git config --global core.autocrlf input"
