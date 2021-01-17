@@ -1,7 +1,12 @@
 import {router} from "../router";
 import {DTO} from "../types";
 import {validType} from "../../util/util";
-import user, {getUserInfo, getCountByName, updateToken} from "../../schema/models/user";
+import user, {
+  getUserInfo,
+  getCountByName,
+  updateToken,
+  getInfoByToken,
+} from "../../schema/models/user";
 
 /**
  * 注册
@@ -25,7 +30,7 @@ router.post("/register", async (req, res) => {
 });
 
 /**
- * 登录
+ * 账号密码登录获取token
  */
 router.post("/login", async (req, res) => {
   const valid: any = await validType(req.body, {
@@ -52,5 +57,18 @@ router.post("/login", async (req, res) => {
     }
   }
   return DTO.error(res)(valid.err);
+});
+
+/**
+ * token登录获取用户信息
+ */
+
+router.post("/token", async (req, res) => {
+  const data: any = await getInfoByToken(req);
+  if (data) {
+    return DTO.data(res)(data);
+  } else {
+    return DTO.noAuth(res)();
+  }
 });
 export default router;

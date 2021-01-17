@@ -51,4 +51,16 @@ export const updateToken = async (id: string) => {
   );
 };
 
+/**
+ * 验证token 根据token 取信息
+ */
+export const getInfoByToken = async (req: any) => {
+  const token = req.headers.authorization.split(" ")[1];
+  if (token) {
+    return await getUserInfo({token});
+  } else {
+    return undefined;
+  }
+};
+
 export default user;
