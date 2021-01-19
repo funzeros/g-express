@@ -1,4 +1,4 @@
-import {BOOLEAN, STRING} from "sequelize";
+import {BIGINT, BOOLEAN, STRING} from "sequelize";
 import {defineModel} from "../db";
 const menu = defineModel("menu", {
   // 菜单名称
@@ -7,8 +7,8 @@ const menu = defineModel("menu", {
   name: STRING(12),
   // 父id
   parentId: {
-    type: STRING(36),
-    defaultValue: "",
+    type: BIGINT,
+    defaultValue: 0,
   },
   // 是否隐藏路由 即非菜单
   isHidden: {
@@ -21,4 +21,11 @@ const menu = defineModel("menu", {
   component: STRING,
 });
 
+export const getMenu = async (where?: any) => {
+  const data = await menu.findAll({
+    attributes: ["id", "menuName", "name", "parentId", "isHidden", "path", "component"],
+    where,
+  });
+  return data;
+};
 export default menu;

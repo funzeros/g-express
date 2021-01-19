@@ -65,10 +65,7 @@ router.post("/login", async (req, res) => {
 
 router.post("/token", async (req, res) => {
   const data: any = await getInfoByToken(req);
-  if (data) {
-    return DTO.data(res)(data);
-  } else {
-    return DTO.noAuth(res)();
-  }
+  if (data) return DTO.data(res)(data);
+  return DTO.noAuth(res)();
 });
 export default router;

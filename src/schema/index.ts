@@ -9,7 +9,7 @@ files
   }, files)
   .forEach(f => {
     const name = f.substring(0, f.length - 3);
-    console.log(`从文件${f} 导入模块${name}...`);
+    console.log(`从文件${f} 导入模块${name}...（表）`);
     exportsObj[name] = require(__dirname + "/models/" + f);
   });
 

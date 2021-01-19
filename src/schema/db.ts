@@ -1,4 +1,4 @@
-import {BIGINT, Sequelize, UUID, UUIDV4} from "sequelize";
+import {BIGINT, Sequelize} from "sequelize";
 
 import "dotenv/config";
 
@@ -44,9 +44,9 @@ export const defineModel = (name: string, attributes: any) => {
     }
   }
   attrs.id = {
-    type: UUID,
-    defaultValue: UUIDV4,
+    type: BIGINT,
     primaryKey: true,
+    autoIncrement: true,
   };
   attrs.createdAt = {
     type: BIGINT,
