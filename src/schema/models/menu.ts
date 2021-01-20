@@ -24,7 +24,15 @@ const menu = defineModel("menu", {
 export const getMenu = async (where?: any) => {
   const data = await menu.findAll({
     attributes: ["id", "menuName", "name", "parentId", "isHidden", "path", "component"],
-    where,
+    where: {...where, delFlag: false},
+  });
+  return data;
+};
+
+export const updateMenu = async (uData: any, where: any) => {
+  delete uData.id;
+  const data = await menu.update(uData, {
+    where: {...where, delFlag: false},
   });
   return data;
 };

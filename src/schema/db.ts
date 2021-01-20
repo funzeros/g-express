@@ -1,4 +1,4 @@
-import {BIGINT, Sequelize} from "sequelize";
+import {BIGINT, BOOLEAN, Sequelize} from "sequelize";
 
 import "dotenv/config";
 
@@ -59,6 +59,11 @@ export const defineModel = (name: string, attributes: any) => {
   attrs.version = {
     type: BIGINT,
     allowNull: false,
+  };
+  attrs.delFlag = {
+    type: BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
   };
   return sequelize.define(name, attrs, {
     tableName: name,

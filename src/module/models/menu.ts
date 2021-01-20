@@ -1,4 +1,5 @@
-import menu, {getMenu} from "../../schema/models/menu";
+import menu, {getMenu, updateMenu} from "../../schema/models/menu";
+import {menuToTree} from "../../util/menuUtil";
 import {isAuth, validType} from "../../util/util";
 import {router} from "../router";
 import {DTO} from "../types";
@@ -15,9 +16,23 @@ router.get("/page", async (req, res) => {
       total: 10,
       size: 10,
       current: 10,
-      records: data,
+      records: menuToTree(data),
     };
     DTO.data(res)(resData);
+  } catch {
+    DTO.error(res)("菜单获取失败");
+  }
+});
+
+/**
+ * 获取全部的菜单列表（父子结构）
+ */
+router.get("/list", async (req, res) => {
+  // 判断token
+  if (!(await isAuth(req, res))) return;
+  try {
+    const data = await getMenu();
+    DTO.data(res)(menuToTree(data));
   } catch {
     DTO.error(res)("菜单获取失败");
   }
@@ -41,6 +56,11 @@ router.post("/create", async (req, res) => {
   });
   if (valid.f) {
     try {
+      const resData = valid.resData;
+      if (resData.parentId) {
+        const data = await getMenu({id: resData.parentId});
+        if (!data.length) return DTO.error(res)("父菜单不存在");
+      }
       await menu.create(valid.resData);
       return DTO.data(res)(true);
     } catch {
@@ -49,4 +69,60 @@ router.post("/create", async (req, res) => {
   }
   return DTO.error(res)(valid.err);
 });
+
+/**
+ * 删除菜单
+ */
+router.get("/delete", async (req, res) => {
+  if (!(await isAuth(req, res))) return;
+  const {id} = req.query;
+  if (id) {
+    await updateMenu(
+      {
+        delFlag: true,
+      },
+      {
+        id,
+      }
+    );
+    return DTO.data(res)(true);
+  }
+  DTO.error(res)("缺少删除id");
+});
+
+/**
+ * 获取菜单详情
+ */
+
+router.get("/detail", async (req, res) => {
+  if (!(await isAuth(req, res))) return;
+  const {id} = req.query;
+  if (id) {
+    const detail = await getMenu({id});
+    if (detail[0]) return DTO.data(res)(detail[0]);
+    return DTO.error(res)("找了个寂寞");
+  }
+  DTO.error(res)("缺少删除id");
+});
+
+/**
+ * 更新菜单详情
+ */
+
+router.post("/update", async (req, res) => {
+  if (!(await isAuth(req, res))) return;
+  try {
+    if (req.body.parentId) {
+      const data = await getMenu({id: req.body.parentId});
+      if (!data.length) return DTO.error(res)("父菜单不存在");
+    }
+    await updateMenu(req.body, {
+      id: req.body.id,
+    });
+    return DTO.data(res)(true);
+  } catch {
+    return DTO.error(res)("菜单更新失败");
+  }
+});
+
 export default router;

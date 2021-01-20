@@ -19,7 +19,7 @@ const user = defineModel("user", {
 export const getUserInfo = async (where: any) => {
   const data = await user.findAll({
     attributes: ["id", "name", "token"],
-    where,
+    where: {...where, delFlag: false},
   });
   return data[0];
 };
@@ -31,6 +31,7 @@ export const getCountByName = async (name: string) => {
   return await user.count({
     where: {
       name: name,
+      delFlag: false,
     },
   });
 };
@@ -46,6 +47,7 @@ export const updateToken = async (id: string) => {
     {
       where: {
         id,
+        delFlag: false,
       },
     }
   );
