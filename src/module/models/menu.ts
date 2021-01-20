@@ -8,7 +8,7 @@ import {DTO} from "../types";
  */
 router.get("/page", async (req, res) => {
   // 判断token
-  await isAuth(req, res);
+  if (!(await isAuth(req, res))) return;
   try {
     const data = await getMenu();
     const resData = {
@@ -27,6 +27,7 @@ router.get("/page", async (req, res) => {
  * 新增菜单
  */
 router.post("/create", async (req, res) => {
+  if (!(await isAuth(req, res))) return;
   const valid: any = await validType(req.body, {
     menuName: String,
     name: String,
