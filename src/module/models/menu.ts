@@ -30,7 +30,10 @@ router.post("/create", async (req, res) => {
   const valid: any = await validType(req.body, {
     menuName: String,
     name: String,
-    parentId: Number,
+    parentId: {
+      allowNull: true,
+      type: Number,
+    },
     isHidden: Boolean,
     path: String,
     component: String,

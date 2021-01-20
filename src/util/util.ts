@@ -15,13 +15,12 @@ export const validType = (data: any, rule: any) =>
         resData[k] = data[k];
         const ruleItem = rule[k];
         if (ruleItem.constructor === Object) {
-          if (!ruleItem.allowNull) {
-            if (isEmpty(data[k])) return false;
-          }
+          if (isEmpty(data[k])) return ruleItem.allowNull;
+          return data[k].constructor === ruleItem.type;
         } else {
           if (isEmpty(data[k])) return false;
+          return data[k].constructor === ruleItem;
         }
-        return data[k].constructor === ruleItem;
       });
       if (flag) {
         res({f: true, resData});
