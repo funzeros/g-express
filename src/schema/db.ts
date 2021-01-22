@@ -1,14 +1,14 @@
 import {BIGINT, BOOLEAN, Sequelize} from "sequelize";
+import {loadEnv} from "../util/env";
+const {DB_NAME, DB_USER, DB_PASSWORD, DB_IP} = loadEnv();
 
-import "dotenv/config";
-
-const database = process.env.DB_NAME || "test";
-const name = process.env.DB_USER || "root";
-const password = process.env.DB_PASSWORD || "123456";
-
+const database = DB_NAME || "test";
+const name = DB_USER || "root";
+const password = DB_PASSWORD || "123456";
+console.log(DB_IP);
 export const sequelize = new Sequelize(database, name, password, {
   dialect: "mysql", //数据库类型
-  host: "127.0.0.1", //主机地址
+  host: DB_IP, //主机地址
   port: 3306,
   pool: {
     //连接池设置

@@ -1,6 +1,8 @@
 import fs from "fs";
 import {sequelize} from "./db";
-import "dotenv/config";
+import {loadEnv} from "../util/env";
+const {DB_ALTER, DB_FORCE} = loadEnv();
+
 const files = fs.readdirSync(__dirname + "/models");
 const exportsObj: any = {};
 files
@@ -20,8 +22,8 @@ export const connectDB = (): void => {
       console.log("数据库已连接！");
       sequelize
         .sync({
-          alter: !!process.env.DB_ALTER, // 表格结构有变更时修改 生产环境用
-          force: !process.env.DB_ALTER, // 每次都删表重新建 开发环境用
+          alter: DB_ALTER, // 表格结构有变更时修改 生产环境用
+          force: DB_FORCE, // 每次都删表重新建 开发环境用
         })
         .then(() => {
           console.log("数据库表初始化 ok");
