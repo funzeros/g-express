@@ -5,7 +5,6 @@ const {DB_NAME, DB_USER, DB_PASSWORD, DB_IP} = loadEnv();
 const database = DB_NAME || "test";
 const name = DB_USER || "root";
 const password = DB_PASSWORD || "123456";
-console.log(DB_IP);
 export const sequelize = new Sequelize(database, name, password, {
   dialect: "mysql", //数据库类型
   host: DB_IP, //主机地址
@@ -79,6 +78,11 @@ export const defineModel = (name: string, attributes: any) => {
           obj.updatedAt = Date.now();
           obj.version++;
         }
+      },
+      beforeBulkUpdate: (obj: any) => {
+        // 更新时间
+        obj.fields.push("updatedAt");
+        obj.attributes.updatedAt = Date.now();
       },
     },
   });
