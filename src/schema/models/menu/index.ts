@@ -1,5 +1,5 @@
 import {BIGINT, BOOLEAN, STRING} from "sequelize";
-import {defineModel} from "../db";
+import {defineModel} from "../../db";
 const menu = defineModel("menu", {
   // 菜单名称
   menuName: STRING(12),

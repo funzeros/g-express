@@ -1,19 +1,6 @@
-import fs from "fs";
 import {sequelize} from "./db";
 import {loadEnv} from "../util/env";
 const {DB_ALTER, DB_FORCE} = loadEnv();
-
-const files = fs.readdirSync(__dirname + "/models");
-const exportsObj: any = {};
-files
-  .filter(f => {
-    return f.endsWith(".ts") || f.endsWith(".js");
-  }, files)
-  .forEach(f => {
-    const name = f.substring(0, f.length - 3);
-    console.log(`从文件${f} 导入模块${name}...（表）`);
-    exportsObj[name] = require(__dirname + "/models/" + f);
-  });
 
 export const connectDB = (): void => {
   sequelize
@@ -37,5 +24,3 @@ export const connectDB = (): void => {
       console.log("数据库连接失败");
     });
 };
-
-export default exportsObj;

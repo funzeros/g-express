@@ -1,7 +1,7 @@
 import {BIGINT, STRING} from "sequelize";
 import {v4 as uuidv4} from "uuid";
 
-import {defineModel} from "../db";
+import {defineModel} from "../../db";
 const user = defineModel("user", {
   name: STRING(32),
   password: STRING(32),

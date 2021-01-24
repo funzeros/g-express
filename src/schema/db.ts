@@ -29,6 +29,7 @@ export const sequelize = new Sequelize(database, name, password, {
 
 // 公共的定义方法
 export const defineModel = (name: string, attributes: any) => {
+  console.log(`定义${name}表结构`);
   const attrs: any = {};
   attrs.id = {
     type: BIGINT,

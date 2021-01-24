@@ -1,8 +1,8 @@
-import menu, {getMenu, getMenuOne, updateMenu} from "../../schema/models/menu";
-import {menuToTree} from "../../util/menuUtil";
-import {isAuth, validType} from "../../util/util";
-import {router} from "../router";
-import {DTO} from "../types";
+import menu, {getMenu, getMenuOne, updateMenu} from "../../../schema/models/menu";
+import {menuToTree} from "../../../util/menuUtil";
+import {isAuth, validType} from "../../../util/util";
+import {router} from "../../router";
+import {DTO} from "../../types";
 
 /**
  * 获取全部的菜单分页（父子结构）

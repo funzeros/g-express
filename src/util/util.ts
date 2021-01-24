@@ -39,3 +39,25 @@ export const isAuth = async (req: any, res: any) => {
   DTO.noAuth(res)();
   return undefined;
 };
+
+// 分页查询
+export const getPageFn = (req: any, res: any) => {
+  const {current = 1, size = 10, ...arg} = req.query;
+  const offset = (+current - 1) * +size;
+  const limit = +size;
+  return async (model: any, attributes?: string[], where?: any) => {
+    const data = await model.findAndCountAll({
+      attributes,
+      where: {...(where || arg), delFlag: false},
+      offset,
+      limit,
+    });
+    const resData = {
+      ...data,
+      current: +current,
+      size: +size,
+    };
+    DTO.page(res)(resData);
+    return resData;
+  };
+};

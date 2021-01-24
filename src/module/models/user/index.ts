@@ -1,12 +1,12 @@
-import {router} from "../router";
-import {DTO} from "../types";
-import {validType} from "../../util/util";
+import {router} from "../../router";
+import {DTO} from "../../types";
+import {validType} from "../../../util/util";
 import user, {
   getUserInfo,
   getCountByName,
   updateToken,
   getInfoByToken,
-} from "../../schema/models/user";
+} from "../../../schema/models/user";
 
 /**
  * 注册
