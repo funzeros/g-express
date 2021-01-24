@@ -30,6 +30,11 @@ export const sequelize = new Sequelize(database, name, password, {
 // 公共的定义方法
 export const defineModel = (name: string, attributes: any) => {
   const attrs: any = {};
+  attrs.id = {
+    type: BIGINT,
+    primaryKey: true,
+    autoIncrement: true,
+  };
   for (const key in attributes) {
     const value = attributes[key];
     if (typeof value === "object" && value["type"]) {
@@ -42,11 +47,6 @@ export const defineModel = (name: string, attributes: any) => {
       };
     }
   }
-  attrs.id = {
-    type: BIGINT,
-    primaryKey: true,
-    autoIncrement: true,
-  };
   attrs.createdAt = {
     type: BIGINT,
     allowNull: false,

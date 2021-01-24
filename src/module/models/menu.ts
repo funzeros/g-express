@@ -1,4 +1,4 @@
-import menu, {getMenu, updateMenu} from "../../schema/models/menu";
+import menu, {getMenu, getMenuOne, updateMenu} from "../../schema/models/menu";
 import {menuToTree} from "../../util/menuUtil";
 import {isAuth, validType} from "../../util/util";
 import {router} from "../router";
@@ -98,8 +98,8 @@ router.get("/detail", async (req, res) => {
   if (!(await isAuth(req, res))) return;
   const {id} = req.query;
   if (id) {
-    const detail = await getMenu({id});
-    if (detail[0]) return DTO.data(res)(detail[0]);
+    const detail = await getMenuOne({id});
+    if (detail) return DTO.data(res)(detail);
     return DTO.error(res)("找了个寂寞");
   }
   DTO.error(res)("缺少删除id");
@@ -113,8 +113,8 @@ router.post("/update", async (req, res) => {
   if (!(await isAuth(req, res))) return;
   try {
     if (req.body.parentId) {
-      const data = await getMenu({id: req.body.parentId});
-      if (!data.length) return DTO.error(res)("父菜单不存在");
+      const data = await getMenuOne({id: req.body.parentId});
+      if (!data) return DTO.error(res)("父菜单不存在");
     }
     await updateMenu(req.body, {
       id: req.body.id,

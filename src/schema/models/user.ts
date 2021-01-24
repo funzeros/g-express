@@ -1,4 +1,4 @@
-import {STRING} from "sequelize";
+import {BIGINT, STRING} from "sequelize";
 import {v4 as uuidv4} from "uuid";
 
 import {defineModel} from "../db";
@@ -9,6 +9,10 @@ const user = defineModel("user", {
     allowNull: true,
     type: STRING(36),
   },
+  roleId: {
+    type: BIGINT,
+    allowNull: true,
+  },
 });
 
 /**
@@ -17,11 +21,11 @@ const user = defineModel("user", {
  * @param password
  */
 export const getUserInfo = async (where: any) => {
-  const data = await user.findAll({
+  const data = await user.findOne({
     attributes: ["id", "name", "token"],
     where: {...where, delFlag: false},
   });
-  return data[0];
+  return data;
 };
 /**
  * 根据名字查数量

@@ -29,6 +29,14 @@ export const getMenu = async (where?: any) => {
   return data;
 };
 
+export const getMenuOne = async (where?: any) => {
+  const data = await menu.findOne({
+    attributes: ["id", "menuName", "name", "parentId", "isHidden", "path", "component"],
+    where: {...where, delFlag: false},
+  });
+  return data;
+};
+
 export const updateMenu = async (uData: any, where: any) => {
   delete uData.id;
   const data = await menu.update(uData, {
