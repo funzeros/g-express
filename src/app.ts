@@ -5,7 +5,9 @@ import bodyParser from "body-parser"; //用于req.body获取值的
 
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./static/swagger.json";
-import scheduleWs from "./util/autoSchedule";
+import scheduleWs from "./ws/dns/autoSchedule";
+import luckVentWs from "./ws/luckVent/autoSchedule";
+
 import moduleRouter from "./module/index";
 import {not_found_handler, error_handler_middleware} from "./util/middle";
 import {connectDB} from "./schema/index";
@@ -23,7 +25,10 @@ app.ws("/ws", ws => {
   // 将 ws 传递给函数
   scheduleWs(ws);
 });
-
+// 幸运降临的webscoket
+app.ws("/lvws", ws => {
+  luckVentWs(ws);
+});
 // 前置中间件
 app.use(bodyParser.json());
 // 创建 application/x-www-form-urlencoded 编码解析
