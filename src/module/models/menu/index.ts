@@ -1,8 +1,9 @@
 import menu, {getMenu, getMenuOne, updateMenu} from "../../../schema/models/menu";
 import {menuToTree} from "../../../util/menuUtil";
 import {isAuth, validType} from "../../../util/util";
-import {router} from "../../router";
+import {useRouter} from "../../router";
 import {DTO} from "../../types";
+const router = useRouter();
 
 /**
  * 获取全部的菜单分页（父子结构）

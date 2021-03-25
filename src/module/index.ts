@@ -1,10 +1,12 @@
 import user from "./models/user";
 import menu from "./models/menu";
+import role from "./models/role";
 import userAdmin from "./models/user/admin";
 
 const models = {
   user,
   menu,
+  role,
 };
 export const loadChunkModels = {
   userAdmin,

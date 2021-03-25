@@ -1,2 +1,2 @@
 import express from "express";
-export const router = express.Router();
+export const useRouter = () => express.Router();

@@ -1,4 +1,4 @@
-import {router} from "../../router";
+import {useRouter} from "../../router";
 import {DTO} from "../../types";
 import {validType} from "../../../util/util";
 import user, {
@@ -7,7 +7,7 @@ import user, {
   updateToken,
   getInfoByToken,
 } from "../../../schema/models/user";
-
+const router = useRouter();
 /**
  * 注册
  */
