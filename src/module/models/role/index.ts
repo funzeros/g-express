@@ -1,9 +1,15 @@
 import {useRouter} from "../../router";
 import {DTO} from "../../types";
 
-import role, {getCountByRoleName, getRoleList, updateRole} from "../../../schema/models/role";
+import role, {
+  getCountByRoleName,
+  getRoleInfo,
+  getRoleList,
+  updateRole,
+} from "../../../schema/models/role";
 import {getInfoByToken} from "../../../schema/models/user";
 import {isAuth} from "../../../util/util";
+import {useRole} from "./hooks";
 const router = useRouter();
 
 /**
@@ -19,7 +25,7 @@ router.post("/create", async (req, res) => {
         ...req.body,
         userId: userInfo.id,
       };
-      await role.create(data);
+      await role.create(useRole().init(data));
       return DTO.data(res)(true);
     }
     return DTO.noAuth(res)();
@@ -76,5 +82,27 @@ router.get("/delete", async (req, res) => {
     return DTO.data(res)(true);
   }
   DTO.error(res)("缺少删除id");
+});
+
+/**
+ * 查询角色
+ */
+router.get("/info/:id", async (req, res) => {
+  try {
+    const userInfo: any = await getInfoByToken(req);
+    if (userInfo) {
+      const {id} = req.params;
+      if (id !== "undefined") {
+        const data = await getRoleInfo({id, userId: userInfo.id});
+        if (data) {
+          return DTO.data(res)(data);
+        }
+      }
+      return DTO.error(res)("未获取到角色信息");
+    }
+    return DTO.noAuth(res)();
+  } catch {
+    return DTO.error(res)("角色信息获取失败");
+  }
 });
 export default router;

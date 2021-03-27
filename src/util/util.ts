@@ -61,3 +61,9 @@ export const getPageFn = (req: any, res: any) => {
     return resData;
   };
 };
+
+// 随机范围
+
+export const random = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min) + min);
+};
