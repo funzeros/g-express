@@ -1,6 +1,6 @@
 import {useRouter} from "../../router";
 import {DTO} from "../../types";
-import {validType} from "../../../util/util";
+import {validType, wgaFn} from "../../../util/util";
 import user, {
   getUserInfo,
   getCountByName,
@@ -33,6 +33,7 @@ router.post("/register", async (req, res) => {
  * 账号密码登录获取token
  */
 router.post("/login", async (req, res) => {
+  if (!(await wgaFn(req, res))) return;
   const valid: any = await validType(req.body, {
     name: String,
     password: String,
@@ -64,6 +65,7 @@ router.post("/login", async (req, res) => {
  */
 
 router.post("/token", async (req, res) => {
+  if (!(await wgaFn(req, res))) return;
   const data: any = await getInfoByToken(req);
   if (data) return DTO.data(res)(data);
   return DTO.noAuth(res)();

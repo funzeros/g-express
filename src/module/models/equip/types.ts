@@ -1,10 +1,14 @@
-export class RoleDTO {
-  roleName = ""; // 角色姓名
-  avatarUrl = ""; // 角色头像 url
-  userId = 0;
+export class EquipDTO {
+  equipName = "";
+  url = "";
+  creator = 0;
   level = 1;
-  pom = "1"; // 偏物理还是魔法
-  aod = "1"; // 偏攻击还是防御
+  money = 0;
+  fn = "[]";
+  effects: number[] = [];
+  qua = 1;
+  type = 1;
+  as = 0;
   str = 5;
   strg = 0;
   mind = 5;

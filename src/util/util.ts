@@ -67,3 +67,30 @@ export const getPageFn = (req: any, res: any) => {
 export const random = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min) + min);
 };
+
+/**
+ * 正版验证解法
+ */
+//  export const wgaFn = (time: number) => {
+//   const oldTime = ("" + time).substr(6, 6);
+//   const newTime = ((+oldTime % 9845) + 127) * 1998;
+//   return oldTime + "-" + newTime;
+// };
+export const wgaFn = (req: any, res: any) => {
+  return new Promise(resolve => {
+    const wga: string = req.headers.wga;
+    if (wga) {
+      const [oldTime, newTime] = wga.split("-");
+      const newTime2 = ((+oldTime % 9845) + 127) * 1998;
+      if (+newTime === newTime2) {
+        resolve(true);
+      } else {
+        DTO.error(res)("正版验证失败");
+        resolve(false);
+      }
+    } else {
+      DTO.noAuth(res)();
+      resolve(false);
+    }
+  });
+};
