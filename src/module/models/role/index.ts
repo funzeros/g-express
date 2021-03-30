@@ -3,6 +3,7 @@ import {DTO} from "../../types";
 
 import role, {
   getCountByRoleName,
+  getCountByUserId,
   getRoleInfo,
   getRoleList,
   updateRole,
@@ -20,6 +21,8 @@ router.post("/create", async (req, res) => {
   if (amount) return DTO.error(res)("该角色名已注册");
   try {
     const userInfo: any = await getInfoByToken(req);
+    const count = await getCountByUserId(userInfo.id);
+    if (count >= 5) return DTO.error(res)("角色列表已满");
     if (userInfo) {
       const data = {
         ...req.body,

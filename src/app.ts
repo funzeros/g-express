@@ -19,8 +19,7 @@ const appBase = express();
 // websocket
 const wsInstance = expressWs(appBase);
 const {app} = wsInstance;
-app.ws("/ws", ws => {
-  // 将 ws 传递给函数
+app.ws("/ws", (ws: any) => {
   scheduleWs(ws);
 });
 

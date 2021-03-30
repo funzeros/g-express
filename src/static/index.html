@@ -14,12 +14,12 @@
         oText.innerHTML += str;
       }
       function connect() {
-        const ws = new WebSocket("ws://localhost:10050/autoSchedule");
+        const ws = new WebSocket("ws://localhost:10050/ws");
         ws.onopen = () => {
           ws.send("hello world");
           show("已连接");
         };
-        ws.onmessage = (e) => {
+        ws.onmessage = e => {
           const res = e.data;
           show(res);
         };

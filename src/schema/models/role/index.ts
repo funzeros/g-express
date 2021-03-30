@@ -168,6 +168,19 @@ export const getCountByRoleName = async (roleName: string) => {
   });
 };
 /**
+ * 根据用户id查数量
+ * @param userId
+ * @returns
+ */
+export const getCountByUserId = async (userId: string) => {
+  return await role.count({
+    where: {
+      userId,
+      delFlag: false,
+    },
+  });
+};
+/**
  * 更改数据
  * @param uData
  * @param where

@@ -61,6 +61,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
+    "suppressImplicitAnyIndexErrors": true,
   },
   "exclude": [
     "node_modules"
