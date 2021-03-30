@@ -95,7 +95,7 @@ router.get("/info/:id", async (req, res) => {
       if (id !== "undefined") {
         const data = await getRoleInfo({id, userId: userInfo.id});
         if (data) {
-          return DTO.data(res)(data);
+          return DTO.data(res)(useRole().get(data));
         }
       }
       return DTO.error(res)("未获取到角色信息");
@@ -104,5 +104,47 @@ router.get("/info/:id", async (req, res) => {
   } catch {
     return DTO.error(res)("角色信息获取失败");
   }
+});
+/**
+ * 更新角色
+ */
+router.post("/update", async (req, res) => {
+  const userInfo: any = await getInfoByToken(req);
+  if (!userInfo) {
+    DTO.noAuth(res)();
+    return;
+  }
+  const {id} = req.body;
+  if (id) {
+    await updateRole(req.body, {
+      id,
+      userId: userInfo.id,
+    });
+    return DTO.data(res)(true);
+  }
+  DTO.error(res)("缺少角色id");
+});
+
+/**
+ * 更新角色位置
+ */
+router.post("/updateBlockXY", async (req, res) => {
+  const userInfo: any = await getInfoByToken(req);
+  if (!userInfo) {
+    DTO.noAuth(res)();
+    return;
+  }
+  const {id, blockXY} = req.body;
+  if (id) {
+    await updateRole(
+      {blockXYS: JSON.stringify(blockXY)},
+      {
+        id,
+        userId: userInfo.id,
+      }
+    );
+    return DTO.data(res)(true);
+  }
+  DTO.error(res)("缺少角色id");
 });
 export default router;

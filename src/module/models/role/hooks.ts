@@ -1,3 +1,4 @@
+import {cloneDeep} from "lodash";
 import {random} from "../../../util/util";
 import {RoleDTO} from "./type";
 export const useRole = () => {
@@ -36,6 +37,11 @@ export const useRole = () => {
       option.mind += option.level * option.mindg;
       option.vit += option.level * option.vitg;
       option.will += option.level * option.willg;
+      return option;
+    },
+    get(options: any) {
+      const option = cloneDeep(options.dataValues);
+      option.blockXY = JSON.parse(option.blockXYS);
       return option;
     },
   };

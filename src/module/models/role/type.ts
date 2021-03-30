@@ -34,4 +34,9 @@ export class RoleDTO {
   lre = 0;
   den = 0;
   dre = 0;
+  blockXY: number[][] = [
+    [0, 0],
+    [8, 8],
+  ];
+  blockXYS = "[[0,0],[8,8]]";
 }

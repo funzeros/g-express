@@ -131,6 +131,10 @@ const role = defineModel("role", {
     defaultValue: 0,
     type: INTEGER,
   }, // 暗抗
+  blockXYS: {
+    defaultValue: "[[0,0],[8,8]]",
+    type: STRING,
+  },
 });
 
 /**
