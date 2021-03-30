@@ -7,7 +7,12 @@ const Clinets: GObj = {};
 const useTaroWS = (ws: any, res: WSVO) => {
   if (res.type === WsType.lianjie) {
     const {sourceId} = res;
+    ws.id = sourceId;
     Clinets[sourceId] = ws;
+    ws.on("close", () => {
+      delete Clinets[ws.id];
+    });
+    //
     const params = {
       data: {
         message: "在线服务已连接",
