@@ -1,5 +1,12 @@
 export enum WsType {
-  moren,
-  lianjie,
+  default,
+  connect,
   sys,
+  msg,
+}
+export enum MsgType {
+  default,
+  sys,
+  world,
+  whisper,
 }

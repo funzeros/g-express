@@ -1,11 +1,11 @@
-import {WsType} from "../../const/ws";
+import {WsType, MsgType} from "../../const/ws";
 import {GObj} from "../../types/common";
 import {WSVO} from "../../types/ws";
 import {WSDTO} from "./types";
 
 const Clinets: GObj = {};
 const useTaroWS = (ws: any, res: WSVO) => {
-  if (res.type === WsType.lianjie) {
+  if (res.type === WsType.connect) {
     const {sourceId} = res;
     ws.id = sourceId;
     Clinets[sourceId] = ws;
@@ -20,26 +20,21 @@ const useTaroWS = (ws: any, res: WSVO) => {
       targetId: sourceId,
       type: WsType.sys,
     };
-    sendMsg(new WSDTO(params).toSDTO());
+    sendMsg(new WSDTO(params));
+  } else if (res.type === WsType.msg) {
+    if (res.data.msgType === MsgType.world) {
+      broadcast(res, Object.values(Clinets));
+    } else if (res.data.msgType === MsgType.whisper) {
+      sendMsg(res);
+    }
   }
 };
 
-function sendMsg(data: string) {
-  const {sourceId, targetId} = JSON.parse(data);
-  if (sourceId === targetId) {
-    const params = {
-      data: {
-        message: "不能对自己操作",
-      },
-      targetId,
-      type: WsType.sys,
-    };
-    Clinets[sourceId] && Clinets[sourceId].send(new WSDTO(params).toSDTO());
-    return;
-  }
+function sendMsg(data: WSVO) {
+  const {sourceId, targetId} = data;
   const client = Clinets[targetId];
   if (client) {
-    client.send(data);
+    client.send(JSON.stringify(data));
   } else {
     const params = {
       data: {
@@ -50,5 +45,10 @@ function sendMsg(data: string) {
     };
     Clinets[sourceId] && Clinets[sourceId].send(new WSDTO(params).toSDTO());
   }
+}
+function broadcast(data: WSVO, list: GObj[]) {
+  list.forEach(m => {
+    sendMsg({...data, targetId: m.id});
+  });
 }
 export default useTaroWS;

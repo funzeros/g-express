@@ -10,7 +10,7 @@ export class WSDTO<T = any> implements WSVO {
   code = 0; // 状态码
   data: T; // 数据体
   source = "g-taro"; // 请求端
-  type: WsType.moren; // 请求类型
+  type: WsType.default; // 请求类型
   sourceId = 0; // 请求来源id
   targetId = 0; // 请求目标id
   toSDTO() {
