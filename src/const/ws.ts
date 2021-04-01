@@ -3,6 +3,7 @@ export enum WsType {
   connect,
   sys,
   msg,
+  syncP,
 }
 export enum MsgType {
   default,
