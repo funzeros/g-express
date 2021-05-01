@@ -96,7 +96,7 @@ router.get("/info/:id", async (req, res) => {
     if (userInfo) {
       const {id} = req.params;
       if (id !== "undefined") {
-        const data = await getRoleInfo({id, userId: userInfo.id});
+        const data = await getRoleInfo({id});
         if (data) {
           return DTO.data(res)(useRole().get(data));
         }
