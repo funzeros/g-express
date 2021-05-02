@@ -42,7 +42,7 @@ const equip = defineModel("equip", {
   strg: {
     defaultValue: 0,
     type: INTEGER,
-  }, // 力量 成长值
+  }, // 力量 百分比
   mind: {
     defaultValue: 0,
     type: INTEGER,
@@ -50,7 +50,7 @@ const equip = defineModel("equip", {
   mindg: {
     defaultValue: 0,
     type: INTEGER,
-  }, // 意念 成长值
+  }, // 意念 百分比
   vit: {
     defaultValue: 0,
     type: INTEGER,
@@ -58,7 +58,7 @@ const equip = defineModel("equip", {
   vitg: {
     defaultValue: 0,
     type: INTEGER,
-  }, // 体质 成长值
+  }, // 体质 百分比
   will: {
     defaultValue: 0,
     type: INTEGER,
@@ -66,7 +66,7 @@ const equip = defineModel("equip", {
   willg: {
     defaultValue: 0,
     type: INTEGER,
-  }, // 意志 成长值
+  }, // 意志 百分比
   mhp: {
     defaultValue: 0,
     type: INTEGER,

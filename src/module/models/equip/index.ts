@@ -30,7 +30,7 @@ router.post("/create", async (req, res) => {
     }
     return DTO.noAuth(res)();
   } catch {
-    return DTO.error(res)("创建角色失败");
+    return DTO.error(res)("装备创建失败");
   }
 });
 
