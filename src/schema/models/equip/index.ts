@@ -3,7 +3,7 @@ import {BIGINT, INTEGER, STRING} from "sequelize";
 import {defineModel} from "../../db";
 const equip = defineModel("equip", {
   equipName: STRING(32), // 装备名称
-  url: STRING(5000), // 装备图标
+  url: STRING(255), // 装备图标
   creator: BIGINT, // 打造者id
   level: {
     // 装备等级

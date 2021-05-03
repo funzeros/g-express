@@ -3,7 +3,7 @@ import {BIGINT, INTEGER, STRING} from "sequelize";
 import {defineModel} from "../../db";
 const role = defineModel("role", {
   roleName: STRING(32), // 角色名称
-  avatarUrl: STRING(5000), // 角色头像
+  avatarUrl: STRING(255), // 角色头像
   userId: BIGINT, // 用户id
   level: {
     // 等级

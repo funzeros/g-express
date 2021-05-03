@@ -60,7 +60,7 @@ router.get("/list", async (req, res) => {
   }
 });
 /**
- * 删除角色
+ * 删除装备
  */
 router.get("/delete", async (req, res) => {
   if (!(await isAuth(req, res))) return;

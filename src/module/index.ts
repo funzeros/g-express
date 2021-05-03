@@ -3,12 +3,13 @@ import menu from "./models/menu";
 import role from "./models/role";
 import equip from "./models/equip";
 import userAdmin from "./models/user/admin";
-
+import material from "./models/material/index";
 const models = {
   user,
   menu,
   role,
   equip,
+  material,
 };
 export const loadChunkModels = {
   userAdmin,
