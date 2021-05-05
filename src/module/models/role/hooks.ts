@@ -1,4 +1,4 @@
-import {cloneDeep} from "lodash";
+import {Model} from "sequelize";
 import {random} from "../../../util/util";
 import {RoleDTO} from "./type";
 export const useRole = () => {
@@ -39,8 +39,8 @@ export const useRole = () => {
       option.will += option.level * option.willg;
       return option;
     },
-    get(options: any) {
-      const option = cloneDeep(options.dataValues);
+    get(options: Model) {
+      const option: any = options.toJSON();
       option.blockXY = JSON.parse(option.blockXYS);
       return option;
     },

@@ -1,13 +1,12 @@
-import {JSON, STRING} from "sequelize";
+import {BIGINT, INTEGER, STRING} from "sequelize";
 
 import {defineModel} from "../../db";
 const items = defineModel("items", {
-  name: STRING(32),
-  code: STRING(32),
-  url: STRING(255),
-  type: STRING(32),
-  desc: STRING(255),
-  data: JSON,
+  roleId: BIGINT,
+  type: STRING,
+  relationId: BIGINT,
+  position: INTEGER,
+  count: BIGINT,
 });
 
 /**
@@ -29,13 +28,13 @@ export const getItemsList = async (where: any, attributes: string[]) => {
 };
 
 /**
- * 根据code查数量
+ * 查数量
  * @param
  */
-export const getCountByItemsCode = async (code: string) => {
+export const getCount = async (where: any) => {
   return await items.count({
     where: {
-      code,
+      ...where,
       delFlag: false,
     },
   });

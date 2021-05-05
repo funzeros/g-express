@@ -4,12 +4,14 @@ import role from "./models/role";
 import equip from "./models/equip";
 import userAdmin from "./models/user/admin";
 import material from "./models/material/index";
+import items from "./models/items/index";
 const models = {
   user,
   menu,
   role,
   equip,
   material,
+  items,
 };
 export const loadChunkModels = {
   userAdmin,
