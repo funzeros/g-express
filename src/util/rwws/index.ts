@@ -63,6 +63,7 @@ const gameMate = () => {
               data: {
                 msg: "匹配成功，即将进入对战",
                 status: o.status,
+                roomId: newRoomId,
               },
               targetId: o.userInfo.id,
             })
