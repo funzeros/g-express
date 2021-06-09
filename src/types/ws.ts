@@ -15,6 +15,7 @@ export interface RWWSTypes {
   close?: RWFn;
   sys?: RWFn;
   error?: RWFn;
+  mate?: RWFn;
 }
 export type RWWSType = keyof RWWSTypes;
 
@@ -31,8 +32,17 @@ export interface UserInfo {
   name: string;
   token: string;
 }
+
+export const userStatusDict = {
+  online: "在线",
+  offLine: "下线",
+  matting: "匹配中",
+  gaming: "游戏中",
+};
+export type UserStatus = keyof typeof userStatusDict;
 export interface RWClient {
-  ws: WebSocket;
+  ws?: WebSocket;
   userInfo: UserInfo;
-  online: boolean;
+  status: UserStatus;
+  roomId?: number;
 }
