@@ -1,34 +1,29 @@
 import {chunk, shuffle} from "lodash";
+import {GObj} from "../../types/common";
 import {RWClient, RWWSTypes, RWWSVO, UserInfo, UserStatus} from "../../types/ws";
-import {uniqueNum} from "./tools";
+import {GMap, uniqueNum} from "./tools";
 import {RWWSDTO} from "./types";
 
+// 游戏房间
+const Rooms = new GMap<number, GObj<UserInfo>>();
 // 连接到线上的用户
-const Clients = new Map<number, RWClient>();
+const Clients = new GMap<number, RWClient>();
 const ClientsFn = {
-  // 用户MAP过滤方法
-  filter(fn: (m: RWClient) => boolean) {
-    const arr: RWClient[] = [];
-    Clients.forEach(m => {
-      if (fn(m)) arr.push(m);
-    });
-    return arr;
-  },
   // 在线的用户组
   onlineUser() {
-    return ClientsFn.filter(({status}) => {
+    return Clients.filter(({status}) => {
       return status !== "offLine";
     });
   },
   // 匹配中的用户组
   mattingUser() {
-    return ClientsFn.filter(({status}) => {
+    return Clients.filter(({status}) => {
       return status === "matting";
     });
   },
   // 游戏中的用户组
   gamingUser() {
-    return ClientsFn.filter(({status}) => {
+    return Clients.filter(({status}) => {
       return status === "gaming";
     });
   },
@@ -49,12 +44,14 @@ const gameMate = () => {
   setInterval(() => {
     const list = ClientsFn.mattingUser();
     if (list.length < 2) return;
-    const roomIds = ClientsFn.gamingUser().map(({roomId}) => roomId);
-    list;
+    const roomIds = Rooms.getkeys();
     chunk(shuffle(list), 2).forEach(m => {
       if (m.length === 2) {
         const newRoomId = uniqueNum(roomIds);
+        const params = {};
+        Rooms.set(newRoomId, params);
         m.forEach(o => {
+          params[o.userInfo.id] = o.userInfo;
           o.roomId = newRoomId;
           o.status = "gaming";
           o.ws.send(
