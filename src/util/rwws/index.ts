@@ -5,7 +5,7 @@ import {GMap, uniqueNum} from "./tools";
 import {RWWSDTO} from "./types";
 
 // 游戏房间
-const Rooms = new GMap<number, GObj<UserInfo>>();
+const Rooms = new GMap<number, GObj>();
 // 连接到线上的用户
 const Clients = new GMap<number, RWClient>();
 const ClientsFn = {
@@ -48,10 +48,10 @@ const gameMate = () => {
     chunk(shuffle(list), 2).forEach(m => {
       if (m.length === 2) {
         const newRoomId = uniqueNum(roomIds);
-        const params = {};
+        const params: GObj = {roomId: newRoomId, player: {}};
         Rooms.set(newRoomId, params);
         m.forEach(o => {
-          params[o.userInfo.id] = o.userInfo;
+          params.player[o.userInfo.id] = o.userInfo;
           o.roomId = newRoomId;
           o.status = "gaming";
           o.ws.send(
@@ -78,11 +78,13 @@ const wsFunc: RWWSTypes = {
   connect(ws, res: RWWSDTO<UserInfo>) {
     const {data} = res;
     const status: UserStatus = "online";
-    const oldClient = Clients.get(res.sourceId);
+    const oldClient = Clients.get(data.id);
     const params: RWClient = {ws, userInfo: data, status};
+    let msg = `已连接至线上，当前在线用户数${ClientsFn.onlineUser().length}个`;
     if (oldClient) {
-      // const {status} = oldClient;
       params.status = "gaming";
+      params.roomId = oldClient.roomId;
+      msg = "对局重连成功";
     }
     Clients.set(data.id, params);
     ws.send(
@@ -90,9 +92,10 @@ const wsFunc: RWWSTypes = {
         type: "connect",
         targetId: data.id,
         data: {
-          msg: `已连接至线上，当前在线用户数${ClientsFn.onlineUser().length}个`,
+          msg,
           type: "success",
-          status,
+          status: params.status,
+          roomId: params.roomId,
         },
       })
     );
@@ -117,6 +120,17 @@ const wsFunc: RWWSTypes = {
         data: {
           status: res.data.status,
         },
+      })
+    );
+  },
+  gameStart(ws, res: RWWSDTO<{roomId: number}>) {
+    const {roomId} = res.data;
+    const room = Rooms.get(roomId);
+    ws.send(
+      WSJSON({
+        type: "gameStart",
+        targetId: res.sourceId,
+        data: {room},
       })
     );
   },
