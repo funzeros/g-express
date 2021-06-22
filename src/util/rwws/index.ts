@@ -1,7 +1,7 @@
 import {chunk, shuffle} from "lodash";
 import {GObj} from "../../types/common";
-import {RWClient, RWWSTypes, RWWSVO, UserInfo, UserStatus} from "../../types/ws";
-import {GMap, uniqueNum} from "./tools";
+import {PlayVO, RWClient, RWWSTypes, RWWSVO, UserInfo, UserStatus} from "../../types/ws";
+import {GMap, GMath} from "./tools";
 import {RWWSDTO} from "./types";
 
 // 游戏房间
@@ -47,11 +47,21 @@ const gameMate = () => {
     const roomIds = Rooms.getkeys();
     chunk(shuffle(list), 2).forEach(m => {
       if (m.length === 2) {
-        const newRoomId = uniqueNum(roomIds);
-        const params: GObj = {roomId: newRoomId, player: {}};
+        const newRoomId = GMath.uniqueNum(roomIds);
+        const params: {roomId: number; player: GObj<PlayVO>; turnId: number} = {
+          roomId: newRoomId,
+          player: {},
+          turnId: GMath.randomArray(m).userInfo.id,
+        };
         Rooms.set(newRoomId, params);
         m.forEach(o => {
-          params.player[o.userInfo.id] = o.userInfo;
+          params.player[o.userInfo.id] = {
+            maxHP: 50,
+            currentHP: 50,
+            currentAct: 10,
+            maxAct: 10,
+            ...o.userInfo,
+          };
           o.roomId = newRoomId;
           o.status = "gaming";
           o.ws.send(
@@ -80,13 +90,14 @@ const wsFunc: RWWSTypes = {
     const status: UserStatus = "online";
     const oldClient = Clients.get(data.id);
     const params: RWClient = {ws, userInfo: data, status};
-    let msg = `已连接至线上，当前在线用户数${ClientsFn.onlineUser().length}个`;
     if (oldClient) {
       params.status = "gaming";
       params.roomId = oldClient.roomId;
-      msg = "对局重连成功";
     }
     Clients.set(data.id, params);
+    const msg = oldClient
+      ? "对局重连成功"
+      : `已连接至线上，当前在线用户数${ClientsFn.onlineUser().length}个`;
     ws.send(
       WSJSON({
         type: "connect",

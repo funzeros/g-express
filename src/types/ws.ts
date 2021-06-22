@@ -33,7 +33,12 @@ export interface UserInfo {
   name: string;
   token: string;
 }
-
+export interface PlayVO extends UserInfo {
+  maxHP: number;
+  currentHP: number;
+  maxAct: number;
+  currentAct: number;
+}
 export const userStatusDict = {
   online: "在线",
   offLine: "下线",
