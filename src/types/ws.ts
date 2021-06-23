@@ -38,6 +38,8 @@ export interface PlayVO extends UserInfo {
   currentHP: number;
   maxAct: number;
   currentAct: number;
+  handCards: string[];
+  libCards: string[];
 }
 export const userStatusDict = {
   online: "在线",
@@ -51,4 +53,5 @@ export interface RWClient {
   userInfo: UserInfo;
   status: UserStatus;
   roomId?: number;
+  cards?: string[];
 }

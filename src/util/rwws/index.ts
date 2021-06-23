@@ -5,7 +5,12 @@ import {GMap, GMath} from "./tools";
 import {RWWSDTO} from "./types";
 
 // 游戏房间
-const Rooms = new GMap<number, GObj>();
+interface RoomVO {
+  roomId: number;
+  player: GObj<PlayVO>;
+  turnId: number;
+}
+const Rooms = new GMap<number, RoomVO>();
 // 连接到线上的用户
 const Clients = new GMap<number, RWClient>();
 const ClientsFn = {
@@ -48,18 +53,22 @@ const gameMate = () => {
     chunk(shuffle(list), 2).forEach(m => {
       if (m.length === 2) {
         const newRoomId = GMath.uniqueNum(roomIds);
-        const params: {roomId: number; player: GObj<PlayVO>; turnId: number} = {
+        const params: RoomVO = {
           roomId: newRoomId,
           player: {},
           turnId: GMath.randomArray(m).userInfo.id,
         };
         Rooms.set(newRoomId, params);
         m.forEach(o => {
+          const libCards = shuffle(o.cards);
+          const handCards = libCards.splice(0, 5);
           params.player[o.userInfo.id] = {
             maxHP: 50,
             currentHP: 50,
             currentAct: 10,
             maxAct: 10,
+            handCards,
+            libCards,
             ...o.userInfo,
           };
           o.roomId = newRoomId;
@@ -124,6 +133,7 @@ const wsFunc: RWWSTypes = {
   mate(ws, res: RWWSDTO) {
     const client = Clients.get(res.sourceId);
     client.status = res.data.status;
+    client.cards = res.data.cards;
     ws.send(
       WSJSON({
         type: "mate",
@@ -137,6 +147,7 @@ const wsFunc: RWWSTypes = {
   gameStart(ws, res: RWWSDTO<{roomId: number}>) {
     const {roomId} = res.data;
     const room = Rooms.get(roomId);
+
     ws.send(
       WSJSON({
         type: "gameStart",
