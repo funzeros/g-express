@@ -1,5 +1,7 @@
+import {intersection, isNil, keys, omitBy, pick} from "lodash";
 import {DTO} from "../module/types";
 import {getInfoByToken} from "../schema/models/user";
+import {GObj} from "../types/common";
 
 // 验证控制
 export const isEmpty = (params: any) => {
@@ -94,3 +96,18 @@ export const wgaFn = (req: any, res: any) => {
     }
   });
 };
+
+/**
+ * 覆盖对象属性
+ * @param distObject 初始化对象
+ * @param srcObject 传递过来新对象
+ */
+export function mergeProperties<T>(distObject: T, srcObject: GObj) {
+  const distPropList = keys(distObject);
+  const srcPropList = keys(omitBy(srcObject, isNil));
+  const propList = intersection(distPropList, srcPropList);
+  return {
+    ...distObject,
+    ...pick(srcObject, propList),
+  };
+}

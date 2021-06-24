@@ -47,9 +47,13 @@ const ClientsFn = {
  */
 const gameMate = () => {
   setInterval(() => {
+    const allUserRoomIds = Clients.map(v => v.roomId);
+    const roomIds = Rooms.getkeys();
+    roomIds.forEach(id => {
+      if (!allUserRoomIds.includes(id)) Rooms.delete(id);
+    });
     const list = ClientsFn.mattingUser();
     if (list.length < 2) return;
-    const roomIds = Rooms.getkeys();
     chunk(shuffle(list), 2).forEach(m => {
       if (m.length === 2) {
         const newRoomId = GMath.uniqueNum(roomIds);
@@ -154,6 +158,19 @@ const wsFunc: RWWSTypes = {
         targetId: res.sourceId,
         data: {room},
       })
+    );
+  },
+  syncState(ws, res: RWWSDTO<{cardId: string}>) {
+    const {sourceId, data} = res;
+    const c = Clients.get(sourceId);
+    const room = Rooms.get(c.roomId);
+    Object.assign(room, data);
+    ClientsFn.bordercast(
+      Object.keys(room.player).map(m => Clients.get(+m)),
+      {
+        type: "syncState",
+        data: room,
+      }
     );
   },
 };

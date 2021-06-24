@@ -17,6 +17,7 @@ export interface RWWSTypes {
   error?: RWFn;
   mate?: RWFn;
   gameStart?: RWFn;
+  syncState?: RWFn;
 }
 export type RWWSType = keyof RWWSTypes;
 
