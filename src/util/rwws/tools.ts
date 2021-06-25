@@ -84,19 +84,19 @@ export class GMath {
 
 export class GMap<K, V> extends Map<K, V> {
   static array<Key, Value>(map: GMap<Key, Value> | Map<Key, Value>) {
-    return Array.from(map);
+    return Array.from(map, ([k, v]) => ({key: k, value: v}));
   }
   getkeys() {
-    return Array.from(this).map(([k]) => k);
+    return Array.from(this, ([k]) => k);
   }
   getValues() {
-    return Array.from(this).map(([, v]) => v);
+    return Array.from(this, ([, v]) => v);
   }
   getEntries() {
     return Array.from(this);
   }
   map<R>(fn: (v: V, k: K, i: number) => R): R[] {
-    return Array.from(this).map(([k, v], i) => fn(v, k, i));
+    return Array.from(this, ([k, v], i) => fn(v, k, i));
   }
   filter(fn: (m: V) => boolean) {
     const arr: V[] = [];

@@ -9,6 +9,9 @@ interface RoomVO {
   roomId: number;
   player: GObj<PlayVO>;
   turnId: number;
+  round: number;
+  subRound: number;
+  actTime: number;
 }
 const Rooms = new GMap<number, RoomVO>();
 // 连接到线上的用户
@@ -41,59 +44,98 @@ const ClientsFn = {
       }
     });
   },
+  // 回合结束
+  endTurn(room: RoomVO) {
+    room.actTime = 10;
+    room.subRound += 1;
+    if (room.subRound === 2) {
+      room.subRound = 0;
+      room.round += 1;
+    }
+    room.player[room.turnId].currentAct = room.player[room.turnId].maxAct;
+    const lackLength = 5 - room.player[room.turnId].handCards.length;
+    room.player[room.turnId].handCards.push(
+      ...room.player[room.turnId].libCards.splice(0, lackLength)
+    );
+    Rooms.set(room.roomId, room);
+    ClientsFn.bordercast(
+      Object.keys(room.player).map(m => Clients.get(+m)),
+      {
+        type: "nextTurn",
+        data: room,
+      }
+    );
+  },
 };
 /**
  * 比赛匹配
  */
 const gameMate = () => {
-  setInterval(() => {
-    const allUserRoomIds = Clients.map(v => v.roomId);
-    const roomIds = Rooms.getkeys();
-    roomIds.forEach(id => {
-      if (!allUserRoomIds.includes(id)) Rooms.delete(id);
-    });
-    const list = ClientsFn.mattingUser();
-    if (list.length < 2) return;
-    chunk(shuffle(list), 2).forEach(m => {
-      if (m.length === 2) {
-        const newRoomId = GMath.uniqueNum(roomIds);
-        const params: RoomVO = {
-          roomId: newRoomId,
-          player: {},
-          turnId: GMath.randomArray(m).userInfo.id,
+  const allUserRoomIds = Clients.map(v => v.roomId);
+  const roomIds = Rooms.getkeys();
+  roomIds.forEach(id => {
+    if (!allUserRoomIds.includes(id)) Rooms.delete(id);
+  });
+  const list = ClientsFn.mattingUser();
+  if (list.length < 2) return;
+  chunk(shuffle(list), 2).forEach(m => {
+    if (m.length === 2) {
+      const newRoomId = GMath.uniqueNum(roomIds);
+      const params: RoomVO = {
+        roomId: newRoomId,
+        player: {},
+        turnId: GMath.randomArray(m).userInfo.id,
+        round: 1,
+        subRound: 0,
+        actTime: 20,
+      };
+      Rooms.set(newRoomId, params);
+      m.forEach(o => {
+        const libCards = shuffle(o.cards);
+        const handCards = libCards.splice(0, 5);
+        params.player[o.userInfo.id] = {
+          maxHP: 50,
+          currentHP: 50,
+          currentAct: 10,
+          maxAct: 10,
+          handCards,
+          libCards,
+          ...o.userInfo,
         };
-        Rooms.set(newRoomId, params);
-        m.forEach(o => {
-          const libCards = shuffle(o.cards);
-          const handCards = libCards.splice(0, 5);
-          params.player[o.userInfo.id] = {
-            maxHP: 50,
-            currentHP: 50,
-            currentAct: 10,
-            maxAct: 10,
-            handCards,
-            libCards,
-            ...o.userInfo,
-          };
-          o.roomId = newRoomId;
-          o.status = "gaming";
-          o.ws.send(
-            WSJSON({
-              type: "mate",
-              data: {
-                msg: "匹配成功，即将进入对战",
-                status: o.status,
-                roomId: newRoomId,
-              },
-              targetId: o.userInfo.id,
-            })
-          );
-        });
+        o.roomId = newRoomId;
+        o.status = "gaming";
+        o.ws.send(
+          WSJSON({
+            type: "mate",
+            data: {
+              msg: "匹配成功，即将进入对战",
+              status: o.status,
+              roomId: newRoomId,
+            },
+            targetId: o.userInfo.id,
+          })
+        );
+      });
+    }
+  });
+};
+const timerInit = () => {
+  let time = 0;
+  setInterval(() => {
+    // 每5秒匹配一次
+    if (++time >= 5) {
+      time = 0;
+      gameMate();
+    }
+    Rooms.forEach(room => {
+      if (--room.actTime <= 0) {
+        room.turnId = +Object.keys(room.player).filter(m => +m !== room.turnId)[0];
+        ClientsFn.endTurn(room);
       }
     });
-  }, 5000);
+    // 每秒房间倒计时
+  }, 1000);
 };
-
 function WSJSON<T>(options: RWWSVO<T>) {
   return new RWWSDTO(options).toSDTO();
 }
@@ -165,6 +207,7 @@ const wsFunc: RWWSTypes = {
     const c = Clients.get(sourceId);
     const room = Rooms.get(c.roomId);
     Object.assign(room, data);
+    room.actTime = 10;
     ClientsFn.bordercast(
       Object.keys(room.player).map(m => Clients.get(+m)),
       {
@@ -172,6 +215,16 @@ const wsFunc: RWWSTypes = {
         data: room,
       }
     );
+  },
+  nextTurn(ws, res: RWWSDTO<{roomId: number}>) {
+    const {
+      sourceId,
+      data: {roomId},
+    } = res;
+    const room = Rooms.get(roomId);
+    if (room.turnId !== sourceId) return;
+    room.turnId = +Object.keys(room.player).filter(m => +m !== sourceId)[0];
+    ClientsFn.endTurn(room);
   },
 };
 const useRWWS = (ws: WebSocket, res: RWWSDTO) => {
@@ -192,7 +245,7 @@ const useRWWS = (ws: WebSocket, res: RWWSDTO) => {
 /**
  *  自执行
  */
-gameMate();
+timerInit();
 export default (ws: any): void => {
   ws.on("message", (e: any) => {
     const res = JSON.parse(e) as RWWSDTO;

@@ -18,6 +18,7 @@ export interface RWWSTypes {
   mate?: RWFn;
   gameStart?: RWFn;
   syncState?: RWFn;
+  nextTurn?: RWFn;
 }
 export type RWWSType = keyof RWWSTypes;
 
