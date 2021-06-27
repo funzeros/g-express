@@ -19,6 +19,8 @@ export interface RWWSTypes {
   gameStart?: RWFn;
   syncState?: RWFn;
   nextTurn?: RWFn;
+  attack?: RWFn;
+  gameEnd?: RWFn;
 }
 export type RWWSType = keyof RWWSTypes;
 
@@ -35,6 +37,23 @@ export interface UserInfo {
   name: string;
   token: string;
 }
+interface RiderInstance<T = string> {
+  id: string;
+  name: string;
+  rider: string;
+  url: string;
+  cost: number;
+  mHp: number;
+  cHp: number;
+  atk: number;
+  def: number;
+  dex: number;
+  mFury: number; // 最大怒气
+  cFury: number; // 当前怒气
+  mAtks: number; // 最大可攻击次数
+  sAtks: number; // 剩余攻击次数
+  effects: T[];
+}
 export interface PlayVO extends UserInfo {
   maxHP: number;
   currentHP: number;
@@ -42,6 +61,7 @@ export interface PlayVO extends UserInfo {
   currentAct: number;
   handCards: string[];
   libCards: string[];
+  riderCards: RiderInstance[];
 }
 export const userStatusDict = {
   online: "在线",

@@ -57,6 +57,14 @@ const ClientsFn = {
     room.player[room.turnId].handCards.push(
       ...room.player[room.turnId].libCards.splice(0, lackLength)
     );
+    room.player[room.turnId].riderCards.forEach(m => {
+      m.sAtks = m.mAtks;
+    });
+    if (room.round > 30) {
+      Object.values(room.player).forEach(m => {
+        m.currentHP = Math.max(m.currentHP - (room.round - 30), 0);
+      });
+    }
     Rooms.set(room.roomId, room);
     ClientsFn.bordercast(
       Object.keys(room.player).map(m => Clients.get(+m)),
@@ -65,6 +73,29 @@ const ClientsFn = {
         data: room,
       }
     );
+    ClientsFn.isGameEnd(room);
+  },
+  // 检查游戏胜负
+  isGameEnd(room: RoomVO) {
+    const noHps: number[] = [];
+    Object.values(room.player).forEach(m => {
+      if (m.currentHP <= 0) noHps.push(m.id);
+    });
+    if (noHps.length) {
+      const bordercastTargets = Object.keys(room.player).map(m => Clients.get(+m));
+      const faildId = noHps.length === 1 ? noHps[0] : 0;
+      ClientsFn.bordercast(bordercastTargets, {
+        type: "gameEnd",
+        data: {
+          faildId,
+          status: "online",
+        },
+      });
+      bordercastTargets.forEach(m => {
+        m.status = "online";
+      });
+      Rooms.delete(room.roomId);
+    }
   },
 };
 /**
@@ -100,6 +131,7 @@ const gameMate = () => {
           maxAct: 10,
           handCards,
           libCards,
+          riderCards: [],
           ...o.userInfo,
         };
         o.roomId = newRoomId;
@@ -128,7 +160,7 @@ const timerInit = () => {
       gameMate();
     }
     Rooms.forEach(room => {
-      if (--room.actTime <= 0) {
+      if (--room.actTime < 0) {
         room.turnId = +Object.keys(room.player).filter(m => +m !== room.turnId)[0];
         ClientsFn.endTurn(room);
       }
@@ -202,7 +234,7 @@ const wsFunc: RWWSTypes = {
       })
     );
   },
-  syncState(ws, res: RWWSDTO<{cardId: string}>) {
+  syncState(ws, res: RWWSDTO) {
     const {sourceId, data} = res;
     const c = Clients.get(sourceId);
     const room = Rooms.get(c.roomId);
@@ -225,6 +257,20 @@ const wsFunc: RWWSTypes = {
     if (room.turnId !== sourceId) return;
     room.turnId = +Object.keys(room.player).filter(m => +m !== sourceId)[0];
     ClientsFn.endTurn(room);
+  },
+  // 发动过攻击
+  attack(ws, res: RWWSDTO<{actionList: GObj[]; room: GObj}>) {
+    const {sourceId, data} = res;
+    const c = Clients.get(sourceId);
+    const room = Rooms.get(c.roomId);
+    Object.assign(room, data.room);
+    room.actTime = 10;
+    const bordercastTargets = Object.keys(room.player).map(m => Clients.get(+m));
+    ClientsFn.bordercast(bordercastTargets, {
+      type: "attack",
+      data: {actionList: data.actionList, room},
+    });
+    ClientsFn.isGameEnd(room);
   },
 };
 const useRWWS = (ws: WebSocket, res: RWWSDTO) => {
