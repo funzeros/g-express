@@ -92,7 +92,7 @@ const ClientsFn = {
         },
       });
       bordercastTargets.forEach(m => {
-        m.status = "online";
+        m.status === "gaming" && (m.status = "online");
       });
       Rooms.delete(room.roomId);
     }
@@ -178,13 +178,17 @@ const wsFunc: RWWSTypes = {
     const oldClient = Clients.get(data.id);
     const params: RWClient = {ws, userInfo: data, status};
     if (oldClient) {
-      params.status = "gaming";
-      params.roomId = oldClient.roomId;
+      if (Rooms.has(oldClient.roomId)) {
+        params.roomId = oldClient.roomId;
+
+        params.status = "gaming";
+      }
     }
     Clients.set(data.id, params);
-    const msg = oldClient
-      ? "对局重连成功"
-      : `已连接至线上，当前在线用户数${ClientsFn.onlineUser().length}个`;
+    const msg =
+      params.status === "gaming"
+        ? "对局重连成功"
+        : `已连接至线上，当前在线用户数${ClientsFn.onlineUser().length}个`;
     ws.send(
       WSJSON({
         type: "connect",
