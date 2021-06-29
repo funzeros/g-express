@@ -21,6 +21,7 @@ export interface RWWSTypes {
   nextTurn?: RWFn;
   attack?: RWFn;
   gameEnd?: RWFn;
+  syncUsers?: RWFn;
 }
 export type RWWSType = keyof RWWSTypes;
 

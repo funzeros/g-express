@@ -95,7 +95,15 @@ const ClientsFn = {
         m.status === "gaming" && (m.status = "online");
       });
       Rooms.delete(room.roomId);
+      ClientsFn.syncUsers();
     }
+  },
+  // 获取当前全部用户信息
+  syncUsers() {
+    ClientsFn.bordercast(Clients.getValues(), {
+      type: "syncUsers",
+      data: Clients.map(v => ({name: v.userInfo.name, id: v.userInfo.name, status: v.status})),
+    });
   },
 };
 /**
@@ -150,6 +158,7 @@ const gameMate = () => {
       });
     }
   });
+  ClientsFn.syncUsers();
 };
 const timerInit = () => {
   let time = 0;
@@ -180,15 +189,11 @@ const wsFunc: RWWSTypes = {
     if (oldClient) {
       if (Rooms.has(oldClient.roomId)) {
         params.roomId = oldClient.roomId;
-
         params.status = "gaming";
       }
     }
     Clients.set(data.id, params);
-    const msg =
-      params.status === "gaming"
-        ? "对局重连成功"
-        : `已连接至线上，当前在线用户数${ClientsFn.onlineUser().length}个`;
+    const msg = params.status === "gaming" ? "对局重连成功" : "";
     ws.send(
       WSJSON({
         type: "connect",
@@ -201,6 +206,7 @@ const wsFunc: RWWSTypes = {
         },
       })
     );
+    ClientsFn.syncUsers();
     ws.onclose = () => {
       const id = data.id;
       const clinet = Clients.get(id);
@@ -210,6 +216,7 @@ const wsFunc: RWWSTypes = {
         return;
       }
       Clients.delete(id);
+      ClientsFn.syncUsers();
     };
   },
   mate(ws, res: RWWSDTO) {
@@ -225,11 +232,11 @@ const wsFunc: RWWSTypes = {
         },
       })
     );
+    ClientsFn.syncUsers();
   },
   gameStart(ws, res: RWWSDTO<{roomId: number}>) {
     const {roomId} = res.data;
     const room = Rooms.get(roomId);
-
     ws.send(
       WSJSON({
         type: "gameStart",
