@@ -22,6 +22,7 @@ export interface RWWSTypes {
   attack?: RWFn;
   gameEnd?: RWFn;
   syncUsers?: RWFn;
+  chat?: RWFn;
 }
 export type RWWSType = keyof RWWSTypes;
 
