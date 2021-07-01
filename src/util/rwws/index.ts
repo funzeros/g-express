@@ -1,6 +1,7 @@
 import {chunk, shuffle} from "lodash";
 import {GObj} from "../../types/common";
-import {PlayVO, RWClient, RWWSTypes, RWWSVO, UserInfo, UserStatus} from "../../types/ws";
+import {MsgVO, PlayVO, RWClient, RWWSTypes, RWWSVO, UserInfo, UserStatus} from "../../types/ws";
+import {formatZero} from "../util";
 import {GMap, GMath} from "./tools";
 import {RWWSDTO} from "./types";
 
@@ -210,7 +211,7 @@ const wsFunc: RWWSTypes = {
     ws.onclose = () => {
       const id = data.id;
       const clinet = Clients.get(id);
-      if (clinet.status === "gaming") {
+      if (clinet && clinet.status === "gaming") {
         clinet.status = "offLine";
         clinet.ws = null;
         return;
@@ -282,6 +283,21 @@ const wsFunc: RWWSTypes = {
       data: {actionList: data.actionList, room},
     });
     ClientsFn.isGameEnd(room);
+  },
+  // 聊天
+  chat(ws, res: RWWSDTO<MsgVO>) {
+    const {data} = res;
+    const now = new Date();
+    data.time = `${formatZero(now.getHours(), 2)}:${formatZero(now.getMinutes(), 2)}:${formatZero(
+      now.getSeconds(),
+      2
+    )}`;
+    if (data.type === "world") {
+      ClientsFn.bordercast(ClientsFn.onlineUser(), {
+        type: "chat",
+        data,
+      });
+    }
   },
 };
 const useRWWS = (ws: WebSocket, res: RWWSDTO) => {

@@ -79,3 +79,16 @@ export interface RWClient {
   roomId?: number;
   cards?: string[];
 }
+
+declare enum msgTypes {
+  world,
+  whisper,
+  sys,
+}
+type MsgType = keyof typeof msgTypes;
+export interface MsgVO {
+  type: MsgType;
+  content: string;
+  time: string;
+  name: string;
+}

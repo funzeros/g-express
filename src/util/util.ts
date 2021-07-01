@@ -111,3 +111,11 @@ export function mergeProperties<T>(distObject: T, srcObject: GObj) {
     ...pick(srcObject, propList),
   };
 }
+
+export const formatZero = (num: number, len = 2) => {
+  const str = `${num}`;
+  if (str.length < len) {
+    return (new Array(len).join("0") + str).substring(str.length - 1);
+  }
+  return str;
+};
