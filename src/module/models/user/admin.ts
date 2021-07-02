@@ -12,7 +12,7 @@ router.get(`${prefixUrl}/page`, async (req, res) => {
   try {
     await getPageFn(req, res)(user, ["id", "name"]);
   } catch (error) {
-    DTO.error(error);
+    DTO.error(res)(error);
   }
 });
 

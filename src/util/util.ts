@@ -44,13 +44,13 @@ export const isAuth = async (req: any, res: any) => {
 
 // 分页查询
 export const getPageFn = (req: any, res: any) => {
-  const {current = 1, size = 10, ...arg} = req.query;
+  const {current = 1, size = 10} = req.query;
   const offset = (+current - 1) * +size;
   const limit = +size;
   return async (model: any, attributes?: string[], where?: any) => {
     const data = await model.findAndCountAll({
       attributes,
-      where: {...(where || arg), delFlag: false},
+      where: {...where, delFlag: false},
       offset,
       limit,
     });

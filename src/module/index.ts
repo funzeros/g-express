@@ -5,6 +5,7 @@ import equip from "./models/equip";
 import userAdmin from "./models/user/admin";
 import material from "./models/material/index";
 import items from "./models/items/index";
+import rw from "./models/rw/index";
 const models = {
   user,
   menu,
@@ -12,6 +13,7 @@ const models = {
   equip,
   material,
   items,
+  rw,
 };
 export const loadChunkModels = {
   userAdmin,

@@ -1,4 +1,4 @@
-import {BIGINT, STRING} from "sequelize";
+import {BIGINT, INTEGER, STRING} from "sequelize";
 import {v4 as uuidv4} from "uuid";
 
 import {defineModel} from "../../db";
@@ -13,6 +13,18 @@ const user = defineModel("user", {
     type: BIGINT,
     allowNull: true,
   },
+  exp: {
+    type: INTEGER,
+    defaultValue: 0,
+  },
+  coin: {
+    type: INTEGER,
+    defaultValue: 0,
+  },
+  medal: {
+    type: INTEGER,
+    defaultValue: 0,
+  },
 });
 
 /**
@@ -22,7 +34,7 @@ const user = defineModel("user", {
  */
 export const getUserInfo = async (where: any) => {
   const data = await user.findOne({
-    attributes: ["id", "name", "token"],
+    attributes: ["id", "name", "token", "exp", "coin", "medal"],
     where: {...where, delFlag: false},
   });
   return data;
