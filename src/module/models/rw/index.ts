@@ -52,8 +52,9 @@ router.get("/battle/records/page", async (req, res) => {
         [Op.or]: [{winId: id}, {failId: id}],
       }
     );
+    return;
   } catch (error) {
-    DTO.error(res)(error);
+    return DTO.error(res)(error);
   }
 });
 
@@ -74,7 +75,7 @@ router.post("/card/item/add", async (req, res) => {
     }
     return DTO.noAuth(res)();
   } catch (error) {
-    DTO.error(res)(error);
+    return DTO.error(res)(error);
   }
 });
 
@@ -88,11 +89,11 @@ router.get("/card/item/list", async (req, res) => {
         attributes: ["cardId", "userId"],
         where: {userId: id},
       });
-      DTO.data(res)(data);
+      return DTO.data(res)(data);
     }
     return DTO.noAuth(res)();
   } catch (error) {
-    DTO.error(res)(error);
+    return DTO.error(res)(error);
   }
 });
 
