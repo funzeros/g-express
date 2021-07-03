@@ -7,6 +7,9 @@ import cardItem from "../../../schema/models/rw/card/item";
 import {getInfoByToken} from "../../../schema/models/user";
 
 const router = useRouter();
+
+// /battle/records
+// 战斗记录添加
 router.post("/battle/records/add", async (req, res) => {
   const valid: any = await validType(req.body, {
     winName: String,
@@ -28,7 +31,7 @@ router.post("/battle/records/add", async (req, res) => {
   }
   return DTO.error(res)(valid.err);
 });
-
+// 战斗记录分页
 router.get("/battle/records/page", async (req, res) => {
   try {
     const {id} = req.query;
@@ -54,6 +57,8 @@ router.get("/battle/records/page", async (req, res) => {
   }
 });
 
+// /card/item
+// 获得卡片
 router.post("/card/item/add", async (req, res) => {
   try {
     const userInfo: any = await getInfoByToken(req);
@@ -73,6 +78,7 @@ router.post("/card/item/add", async (req, res) => {
   }
 });
 
+// 拥有卡片数组
 router.get("/card/item/list", async (req, res) => {
   try {
     const userInfo: any = await getInfoByToken(req);
@@ -89,4 +95,5 @@ router.get("/card/item/list", async (req, res) => {
     DTO.error(res)(error);
   }
 });
+
 export default router;
