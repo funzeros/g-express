@@ -25,6 +25,10 @@ const user = defineModel("user", {
     type: INTEGER,
     defaultValue: 0,
   },
+  chip: {
+    type: INTEGER,
+    defaultValue: 0,
+  },
 });
 
 /**
@@ -34,7 +38,7 @@ const user = defineModel("user", {
  */
 export const getUserInfo = async (where: any) => {
   const data = await user.findOne({
-    attributes: ["id", "name", "token", "exp", "coin", "medal"],
+    attributes: ["id", "name", "token", "exp", "coin", "medal", "chip"],
     where: {...where, delFlag: false},
   });
   return data;

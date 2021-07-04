@@ -70,4 +70,29 @@ router.post("/token", async (req, res) => {
   if (data) return DTO.data(res)(data);
   return DTO.noAuth(res)();
 });
+
+/**
+ * 修改用户信息
+ * @param id
+ * @returns
+ */
+router.post("/update", async (req, res) => {
+  try {
+    const data: any = await getInfoByToken(req);
+    if (data) {
+      await user.update(req.body, {
+        where: {
+          id: data.id,
+          delFlag: false,
+        },
+      });
+      return DTO.data(res)(true);
+    } else {
+      return DTO.noAuth(res)();
+    }
+  } catch (error) {
+    return DTO.error(res)(error);
+  }
+});
+
 export default router;

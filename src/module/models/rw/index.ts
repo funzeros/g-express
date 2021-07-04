@@ -75,7 +75,36 @@ router.post("/card/item/add", async (req, res) => {
     }
     return DTO.noAuth(res)();
   } catch (error) {
-    return DTO.error(res)(error);
+    console.log(error);
+    return DTO.error(res)("获得卡牌出错");
+  }
+});
+
+// 批量获得卡片
+router.post("/card/item/bulk", async (req, res) => {
+  try {
+    const userInfo: any = await getInfoByToken(req);
+    if (userInfo) {
+      const {id} = userInfo;
+      const valid: any = await validType(req.body, {
+        cardIds: Array,
+      });
+      const now = Date.now();
+      await cardItem.bulkCreate(
+        valid.resData.cardIds.map((m: string) => ({
+          cardId: m,
+          userId: id,
+          createdAt: now,
+          updatedAt: now,
+          version: 0,
+        }))
+      );
+      return DTO.data(res)(true);
+    }
+    return DTO.noAuth(res)();
+  } catch (error) {
+    console.log(error);
+    return DTO.error(res)("批量获得卡牌出错");
   }
 });
 
@@ -93,7 +122,8 @@ router.get("/card/item/list", async (req, res) => {
     }
     return DTO.noAuth(res)();
   } catch (error) {
-    return DTO.error(res)(error);
+    console.log(error);
+    return DTO.error(res)("查询拥有卡组出错");
   }
 });
 
