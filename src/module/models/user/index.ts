@@ -7,6 +7,7 @@ import user, {
   updateToken,
   getInfoByToken,
 } from "../../../schema/models/user";
+import {GObj} from "../../../types/common";
 const router = useRouter();
 /**
  * 注册
@@ -50,9 +51,8 @@ router.post("/login", async (req, res) => {
           id: data.id,
         });
         return DTO.data(res)(userInfo);
-      } else {
-        return DTO.error(res)("用户名或密码错误");
       }
+      return DTO.error(res)("用户名或密码错误");
     } catch {
       return DTO.error(res)("登录失败");
     }
@@ -87,12 +87,41 @@ router.post("/update", async (req, res) => {
         },
       });
       return DTO.data(res)(true);
-    } else {
-      return DTO.noAuth(res)();
     }
-  } catch (error) {
-    return DTO.error(res)(error);
+    return DTO.noAuth(res)();
+  } catch {
+    return DTO.error(res)("修改信息出错啦");
   }
 });
 
+router.post("/calculate", async (req, res) => {
+  try {
+    const data: any = await getInfoByToken(req);
+    if (data) {
+      const keys = ["exp", "coin", "medal", "chip"];
+      const dataBody: GObj = {};
+      const flag = Object.keys(req.body).every(m => {
+        if (keys.includes(m)) {
+          const oldV = data[m];
+          dataBody[m] = oldV + req.body[m];
+          return true;
+        }
+        return false;
+      });
+      if (flag) {
+        await user.update(dataBody, {
+          where: {
+            id: data.id,
+            delFlag: false,
+          },
+        });
+        return DTO.data(res)(true);
+      }
+      return DTO.error(res)("修改字段错误");
+    }
+    return DTO.noAuth(res)();
+  } catch {
+    return DTO.error(res)("修改数值出错啦");
+  }
+});
 export default router;
