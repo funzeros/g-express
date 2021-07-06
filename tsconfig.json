@@ -62,6 +62,10 @@
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "suppressImplicitAnyIndexErrors": true,
+    "typeRoots": [ /* 要包含的类型声明文件路径列表*/
+      "./src/types",
+      "./node_modules/@types"
+    ],
   },
   "exclude": [
     "node_modules"
