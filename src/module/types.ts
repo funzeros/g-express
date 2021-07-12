@@ -1,20 +1,20 @@
 export class DTOWrap {
-  constructor(code: number, data?: any, message?: string) {
+  constructor(code: number, data?: any, msg?: string) {
     this.code = code;
     this.data = data;
-    this.message = message;
+    this.msg = msg;
   }
   code: number;
   data?: any;
-  message?: string;
+  msg?: string;
 }
 
 export const DTO = {
-  error: (res: any) => (message: string, data?: any) => res.json(new DTOWrap(1, data, message)),
-  data: (res: any) => (data: any, message?: string) => res.json(new DTOWrap(0, data, message)),
-  noAuth: (res: any) => (message?: string, data?: any) =>
-    res.status(401).json(new DTOWrap(1, data, message || "身份认证失效请重新登录")),
-  page: (res: any) => (arg: any, message?: string) => {
+  error: (res: any) => (msg: string, data?: any) => res.json(new DTOWrap(1, data, msg)),
+  data: (res: any) => (data: any, msg?: string) => res.json(new DTOWrap(0, data, msg)),
+  noAuth: (res: any) => (msg?: string, data?: any) =>
+    res.status(401).json(new DTOWrap(1, data, msg || "身份认证失效请重新登录")),
+  page: (res: any) => (arg: any, msg?: string) => {
     const {count, rows, current, size} = arg;
     const data = {
       total: count,
@@ -22,6 +22,6 @@ export const DTO = {
       size,
       current,
     };
-    return res.json(new DTOWrap(0, data, message));
+    return res.json(new DTOWrap(0, data, msg));
   },
 };
