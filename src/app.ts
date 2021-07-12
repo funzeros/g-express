@@ -1,10 +1,7 @@
-// import path from "path";
 import express from "express";
 import expressWs from "express-ws";
 import bodyParser from "body-parser"; //用于req.body获取值的
-// import swaggerUi from "swagger-ui-express";
-// import swaggerDocument from "./static/swagger.json";
-import rwwsRuntime from "./util/rwws/index";
+import kbwsRuntime from "./util/kbws/index";
 import moduleRouter from "./module/index";
 import {not_found_handler, error_handler_middleware} from "./util/middle";
 import {connectDB} from "./schema/index";
@@ -17,10 +14,9 @@ const appBase = express();
 // websocket
 const wsInstance = expressWs(appBase);
 const {app} = wsInstance;
-// 龙与传说taro ws
-// rider-war ws
-app.ws("/rwws", (ws: any) => {
-  rwwsRuntime(ws);
+// kbman ws
+app.ws("/kbws", (ws: any) => {
+  kbwsRuntime(ws);
 });
 // 前置中间件
 app.use(bodyParser.json());
