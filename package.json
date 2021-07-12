@@ -1,5 +1,5 @@
 {
-  "name": "g-express",
+  "name": "kbman-express",
   "version": "1.0.0",
   "main": "index.ts",
   "author": "方珂琛 <984512789@qq.com>",
@@ -9,10 +9,10 @@
     "dev": "nodemon -e ts --exec ts-node index.ts",
     "build": "tsc",
     "serve": "node ./dist/index.js",
-    "pm": "pm2 start ./dist/index.js --name g-express",
-    "pmr": "pm2 restart g-express",
-    "pms": "pm2 stop g-express",
-    "pmd": "pm2 delete g-express",
+    "pm": "pm2 start ./dist/index.js --name kbman-express",
+    "pmr": "pm2 restart kbman-express",
+    "pms": "pm2 stop kbman-express",
+    "pmd": "pm2 delete kbman-express",
     "fix": "git config --global core.autocrlf input"
   },
   "dependencies": {

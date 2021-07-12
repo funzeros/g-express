@@ -1,9 +1,9 @@
-import path from "path";
+// import path from "path";
 import express from "express";
 import expressWs from "express-ws";
 import bodyParser from "body-parser"; //用于req.body获取值的
-import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "./static/swagger.json";
+// import swaggerUi from "swagger-ui-express";
+// import swaggerDocument from "./static/swagger.json";
 import rwwsRuntime from "./util/rwws/index";
 import moduleRouter from "./module/index";
 import {not_found_handler, error_handler_middleware} from "./util/middle";
@@ -26,8 +26,8 @@ app.ws("/rwws", (ws: any) => {
 app.use(bodyParser.json());
 // 创建 application/x-www-form-urlencoded 编码解析
 app.use(bodyParser.urlencoded({extended: false}));
-app.use("/html", express.static(path.join(__dirname, "static")));
-app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// app.use("/html", express.static(path.join(__dirname, "static")));
+// app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // 加载模块
 Object.entries(moduleRouter).forEach(([name, module]) => {
