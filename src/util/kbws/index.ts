@@ -1,10 +1,21 @@
+import {GTime} from "../date";
 import {GMap} from "../rwws/tools";
-import {KBClient, KBWSDTO, KBWSTypes, KBWSVO, UserInfo, XY} from "./type";
+import {ChatVO, KBClient, KBWSDTO, KBWSTypes, KBWSVO, UserInfo, XY} from "./type";
 
 function WSJSON<T>(options: Partial<KBWSVO<T>>) {
   return new KBWSDTO(options).toSDTO();
 }
 
+function Broadcast<T>(targets: KBClient[], msgBody: Partial<KBWSVO<T>>) {
+  targets.forEach(({ws, userInfo}) => {
+    ws.send(
+      WSJSON({
+        ...msgBody,
+        targetId: userInfo.id,
+      })
+    );
+  });
+}
 const Clients = new GMap<number, KBClient>();
 
 class KBTool {
@@ -42,6 +53,21 @@ const wsFunc: Partial<KBWSTypes> = {
     Object.assign(client.userInfo, res.data);
     Clients.set(res.sourceId, client);
     KBTool.syncUsers(ws, res);
+  },
+  chat(ws, res: KBWSVO<ChatVO>) {
+    const {
+      data: {content},
+    } = res;
+    const client = Clients.get(res.sourceId);
+    Broadcast<ChatVO>(Clients.getValues(), {
+      type: "chat",
+      data: {
+        content,
+        id: res.sourceId,
+        name: client.userInfo.name,
+        time: GTime.getDigitTime(),
+      },
+    });
   },
 };
 

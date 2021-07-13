@@ -47,3 +47,10 @@ export type XY = {
   x: number;
   y: number;
 };
+
+export interface ChatVO {
+  content: string;
+  id: number;
+  name: string;
+  time: string;
+}
