@@ -33,3 +33,17 @@ export class KBWSDTO<T = GObj> implements KBWSVO {
     return JSON.stringify(this);
   }
 }
+export interface UserInfo {
+  id: number;
+  name: string;
+  token: string;
+}
+export interface KBClient {
+  ws?: WebSocket;
+  userInfo: UserInfo;
+}
+
+export type XY = {
+  x: number;
+  y: number;
+};

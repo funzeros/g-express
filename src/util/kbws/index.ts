@@ -1,28 +1,27 @@
-import {GObj} from "../../types/common";
 import {GMap} from "../rwws/tools";
-import {KBWSDTO, KBWSTypes, KBWSVO} from "./type";
+import {KBClient, KBWSDTO, KBWSTypes, KBWSVO, UserInfo, XY} from "./type";
 
 function WSJSON<T>(options: Partial<KBWSVO<T>>) {
   return new KBWSDTO(options).toSDTO();
 }
 
-const Clients = new GMap<number, GObj>();
+const Clients = new GMap<number, KBClient>();
 
 class KBTool {
   static syncUsers(ws: WebSocket, res: KBWSVO) {
     ws.send(
       WSJSON({
         type: "syncUsers",
-        data: Clients.getValues(),
+        data: Clients.map(v => v.userInfo),
         targetId: res.sourceId,
       })
     );
   }
 }
 const wsFunc: Partial<KBWSTypes> = {
-  connect(ws, res) {
+  connect(ws, res: KBWSVO<UserInfo>) {
     const {data} = res;
-    Clients.set(res.sourceId, data);
+    Clients.set(res.sourceId, {ws, userInfo: data});
     ws.send(
       WSJSON({
         type: "connect",
@@ -38,9 +37,9 @@ const wsFunc: Partial<KBWSTypes> = {
       Clients.delete(id);
     };
   },
-  syncUsers(ws, res) {
+  syncUsers(ws, res: KBWSVO<XY>) {
     const client = Clients.get(res.sourceId);
-    Object.assign(client, res.data);
+    Object.assign(client.userInfo, res.data);
     Clients.set(res.sourceId, client);
     KBTool.syncUsers(ws, res);
   },
