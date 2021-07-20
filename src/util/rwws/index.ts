@@ -112,7 +112,7 @@ const ClientsFn = {
  */
 const gameMate = () => {
   const allUserRoomIds = Clients.map(v => v.roomId);
-  const roomIds = Rooms.getkeys();
+  const roomIds = Rooms.getKeys();
   roomIds.forEach(id => {
     if (!allUserRoomIds.includes(id)) Rooms.delete(id);
   });

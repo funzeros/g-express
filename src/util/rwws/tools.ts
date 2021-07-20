@@ -86,7 +86,7 @@ export class GMap<K, V> extends Map<K, V> {
   static array<Key, Value>(map: GMap<Key, Value> | Map<Key, Value>) {
     return Array.from(map, ([k, v]) => ({key: k, value: v}));
   }
-  getkeys() {
+  getKeys() {
     return Array.from(this, ([k]) => k);
   }
   getValues() {

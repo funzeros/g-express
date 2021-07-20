@@ -3,7 +3,7 @@ import expressWs from "express-ws";
 import bodyParser from "body-parser"; //用于req.body获取值的
 import kbwsRuntime from "./util/kbws/index";
 import moduleRouter from "./module/index";
-import {not_found_handler, error_handler_middleware} from "./util/middle";
+import {not_found_handler, error_handler_middleware, allowCrossDomain} from "./util/middle";
 import {connectDB} from "./schema/index";
 import {loadEnv} from "./util/env";
 const {PREFIX, PORT} = loadEnv();
@@ -18,6 +18,7 @@ const {app} = wsInstance;
 app.ws("/kbws", (ws: any) => {
   kbwsRuntime(ws);
 });
+app.use(allowCrossDomain);
 // 前置中间件
 app.use(bodyParser.json());
 // 创建 application/x-www-form-urlencoded 编码解析

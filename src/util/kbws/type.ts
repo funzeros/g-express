@@ -9,6 +9,7 @@ export interface KBWSTypes {
   error: KBFn;
   syncUsers: KBFn;
   chat: KBFn;
+  syncDirective: KBFn;
 }
 type KBWSType = keyof KBWSTypes;
 
@@ -37,6 +38,12 @@ export interface UserInfo {
   id: number;
   name: string;
   token: string;
+  coin: number;
+  chip: number;
+  exp: number;
+  medal: number;
+  roleP: XY;
+  keyPools: string[];
 }
 export interface KBClient {
   ws?: WebSocket;

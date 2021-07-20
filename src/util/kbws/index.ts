@@ -69,6 +69,19 @@ const wsFunc: Partial<KBWSTypes> = {
       },
     });
   },
+  syncDirective(ws, res: KBWSVO) {
+    const client = Clients.get(res.sourceId);
+    Object.assign(client.userInfo, res.data);
+    Clients.set(res.sourceId, client);
+    Broadcast(
+      Clients.filter(m => m.userInfo.id !== res.sourceId),
+      {
+        type: "syncDirective",
+        data: client.userInfo,
+        sourceId: res.sourceId,
+      }
+    );
+  },
 };
 
 const useKBWS = (ws: WebSocket, res: KBWSDTO) => {
