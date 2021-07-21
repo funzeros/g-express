@@ -10,6 +10,7 @@ export interface KBWSTypes {
   syncUsers: KBFn;
   chat: KBFn;
   syncDirective: KBFn;
+  offline: KBFn;
 }
 type KBWSType = keyof KBWSTypes;
 

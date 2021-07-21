@@ -45,6 +45,13 @@ const wsFunc: Partial<KBWSTypes> = {
     );
     ws.onclose = () => {
       const id = data.id;
+      Broadcast(
+        Clients.filter(m => m.userInfo.id !== res.sourceId),
+        {
+          type: "offline",
+          sourceId: res.sourceId,
+        }
+      );
       Clients.delete(id);
     };
   },
@@ -53,6 +60,14 @@ const wsFunc: Partial<KBWSTypes> = {
     Object.assign(client.userInfo, res.data);
     Clients.set(res.sourceId, client);
     KBTool.syncUsers(ws, res);
+    Broadcast(
+      Clients.filter(m => m.userInfo.id !== res.sourceId),
+      {
+        type: "syncDirective",
+        data: client.userInfo,
+        sourceId: res.sourceId,
+      }
+    );
   },
   chat(ws, res: KBWSVO<ChatVO>) {
     const {
